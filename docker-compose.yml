@@ -1,0 +1,17 @@
+services:
+  db:
+    image: mongo
+    ports:
+      - "27017:27017"
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh db:27017/test --quiet
+      interval: 1s
+      retries: 5
+      timeout: 10s
+  server:
+    build: .
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
